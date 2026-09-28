@@ -13,6 +13,8 @@ Compare two versions of a dataset and explain what changed in a clear, business-
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat&logo=opensourceinitiative&logoColor=white)
 
+![overview](assets/screenshots/overview.jpeg)
+
 Table of contents
 
 - [Purpose of the application](#purpose-of-the-application)
@@ -209,7 +211,7 @@ Try DataDiff Storyteller online:
     <img src="https://img.shields.io/badge/Open_Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Open Streamlit Cloud" />
   </a>
 
-  <a href="https://datadiff.onrender.com/" target="_blank">
+  <a href="https://datadiff-storyteller.onrender.com/" target="_blank">
     <img src="https://img.shields.io/badge/Open_Render-0A2C3A?style=for-the-badge&logo=render&logoColor=white" alt="Open Render" />
   </a>
 </p>

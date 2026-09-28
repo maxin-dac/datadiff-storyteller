@@ -13,6 +13,8 @@ Comparer deux versions d’un dataset et expliquer ce qui a changé sous forme d
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
 ![Licence](https://img.shields.io/badge/Licence-MIT-yellow?style=flat&logo=opensourceinitiative&logoColor=white)
 
+![aperçu](assets/screenshots/aperçu.jpeg)
+
 Table des matières
 
 - [Objectif de l’application](#objectif-de-lapplication)
@@ -209,7 +211,7 @@ Tester DataDiff Storyteller en ligne :
     <img src="https://img.shields.io/badge/Ouvrir_Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Ouvrir Streamlit Cloud" />
   </a>
 
-  <a href="https://datadiff.onrender.com/" target="_blank">
+  <a href="https://datadiff-storyteller.onrender.com/" target="_blank">
     <img src="https://img.shields.io/badge/Ouvrir_Render-0A2C3A?style=for-the-badge&logo=render&logoColor=white" alt="Ouvrir Render" />
   </a>
 </p>
