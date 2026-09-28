@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Tests and local development artifacts
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local demo data and generator
+data/*.csv
+!data/.gitkeep
+scripts/generate_demo_data.py
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# DuckDB / temporary files
+*.duckdb
+*.tmp

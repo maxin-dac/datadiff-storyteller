@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="DataDiff Storyteller logo">
+  <defs>
+    <linearGradient id="dds-bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#dds-bg)"/>
+  <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="#FFFFFF" fill-opacity="0.95"/>
+  <path d="M17 23v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M17 32v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.72"/>
+  <path d="M43 18l5 5-5 5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M48 23H39" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+</svg>

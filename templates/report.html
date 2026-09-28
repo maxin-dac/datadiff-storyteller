@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="{% if lb.doc_app_title.startswith('DataDiff') and 'Rapport' in lb.doc_app_title %}fr{% else %}en{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ lb.doc_app_title }}</title>
+  <style>{{ css | safe }}</style>
+</head>
+<body>
+  <main class="report-container">
+    <header class="report-header">
+      <div class="report-brand">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+          <path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path>
+          <path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path>
+        </svg>
+        <div>
+          <h1>{{ lb.brand_name }}</h1>
+          <p>{{ lb.doc_subtitle }}</p>
+        </div>
+      </div>
+      <dl class="report-meta">
+        <div><dt>{{ lb.doc_baseline }}</dt><dd>{{ meta.baseline_name }}</dd></div>
+        <div><dt>{{ lb.doc_compare }}</dt><dd>{{ meta.compare_name }}</dd></div>
+        <div><dt>{{ lb.doc_baseline_rows }}</dt><dd>{{ meta.baseline_rows }}</dd></div>
+        <div><dt>{{ lb.doc_compare_rows }}</dt><dd>{{ meta.compare_rows }}</dd></div>
+        <div><dt>{{ lb.doc_generated_at }}</dt><dd>{{ meta.generated_at }}</dd></div>
+      </dl>
+    </header>
+    <section class="report-section">
+      <h2>{{ lb.doc_exec_summary }}</h2>
+      <pre class="summary-text">{{ summary }}</pre>
+    </section>
+    <section class="report-section">
+      <h2>{{ lb.doc_changes }}</h2>
+      {% if findings %}
+        {% for finding in findings %}
+          <article class="finding severity-{{ finding.severity }}">
+            <header class="finding-header">
+              <span class="badge badge-{{ finding.severity }}">{{ finding.severity }}</span>
+              <h3>{{ finding.title }}</h3>
+            </header>
+            <p class="finding-narrative">{{ finding.narrative }}</p>
+            {% if finding.columns %}<p class="finding-columns">{{ lb.doc_columns }} : {{ finding.columns | join(", ") }}</p>{% endif %}
+            {% if finding.recommendation %}<p class="finding-recommendation">{{ lb.doc_recommendation }} : {{ finding.recommendation }}</p>{% endif %}
+            {% if finding.metrics %}
+              <details class="finding-details"><summary>{{ lb.doc_metrics }}</summary>
+                <table class="metrics-table"><tbody>
+                {% for key, value in finding.metrics.items() %}<tr><th>{{ key }}</th><td>{{ value }}</td></tr>{% endfor %}
+                </tbody></table>
+              </details>
+            {% endif %}
+            {% if finding.evidence %}
+              <details class="finding-details"><summary>{{ lb.doc_evidence }}</summary><pre class="evidence-block">{{ finding.evidence }}</pre></details>
+            {% endif %}
+          </article>
+        {% endfor %}
+      {% else %}
+        <p>{{ lb.doc_no_change }}</p>
+      {% endif %}
+    </section>
+    <footer class="report-footer"><p>{{ lb.doc_footer }}</p></footer>
+  </main>
+</body>
+</html>
