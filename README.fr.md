@@ -37,7 +37,7 @@ Cas d’usage typiques :
 
 - comparer un fichier clients d’une année sur l’autre ;
 - valider un export avant chargement dans un data warehouse ;
-- revoyser une migration entre deux versions de pipeline ;
+- passer en revue une migration entre deux versions de pipeline ;
 - détecter une dégradation de qualité après un changement amont ;
 - produire un rapport de changement lisible pour des métiers.
 
@@ -276,24 +276,9 @@ Les démonstrations publiques peuvent se réveiller après une période d’inac
     ├── requirements.txt
     └── VERSION
 
-Les fichiers de test locaux et les CSV de démonstration locaux sont volontairement exclus de la première publication publique.
-
-## Feuille de route
-
-Prochaines améliorations à forte valeur :
-
-- interface de correspondance manuelle de colonnes ;
-- règles métier configurables en YAML ou JSON ;
-- support Parquet ;
-- comparaison directe de tables SQL ;
-- mode CLI pour les pipelines CI ;
-- suivi historique des dérives ;
-- génération automatique de tests de qualité recommandés ;
-- reformulation LLM locale optionnelle, strictement contrainte aux findings structurés.
-
 ## Auteur
 
-Maxime NDACLEU - Data Analyst and BI
+Maxime NDACLEU - Data Analyst & BI
 
 ![GitHub](https://img.shields.io/badge/GitHub-maxin--dac-181717?style=flat&logo=github&logoColor=white)
 ![LinkedIn](https://img.shields.io/badge/LinkedIn-maximendacleu-0A66C2?style=flat&logo=linkedin&logoColor=white)

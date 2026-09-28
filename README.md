@@ -276,24 +276,9 @@ Public demos may cold-start after inactivity. If a link is slow, reload once.
     ├── requirements.txt
     └── VERSION
 
-Local test files and local demo CSV files are intentionally excluded from the public first release.
-
-## Roadmap
-
-High-value next steps:
-
-- manual column mapping UI;
-- configurable business rules in YAML or JSON;
-- Parquet support;
-- direct SQL table comparison;
-- CLI mode for CI pipelines;
-- historical drift tracking;
-- automatic generation of recommended data-quality tests;
-- optional local LLM reformulation constrained to structured findings.
-
 ## Author
 
-Maxime NDACLEU - Data Analyst and BI
+Maxime NDACLEU - Data Analyst & BI
 
 ![GitHub](https://img.shields.io/badge/GitHub-maxin--dac-181717?style=flat&logo=github&logoColor=white)
 ![LinkedIn](https://img.shields.io/badge/LinkedIn-maximendacleu-0A66C2?style=flat&logo=linkedin&logoColor=white)
