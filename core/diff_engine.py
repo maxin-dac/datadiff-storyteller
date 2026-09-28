@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Optional
 
 import numpy as np
@@ -262,9 +263,16 @@ def _distribution_findings(df_b, df_c, pb, pc, mappings, lang):
             cc = cprof["categorical"]
             bshares = bc.get("category_shares", {})
             cshares = cc.get("category_shares", {})
-            all_cats = set(bshares) | set(cshares)
-            new_cats = sorted(set(cshares) - set(bshares))
-            removed_cats = sorted(set(bshares) - set(cshares))
+            bcomplete = bc.get("category_shares_complete", len(bshares) >= bprof.get("unique_count", len(bshares)))
+            ccomplete = cc.get("category_shares_complete", len(cshares) >= cprof.get("unique_count", len(cshares)))
+            if bcomplete and ccomplete:
+                all_cats = set(bshares) | set(cshares)
+                new_cats = sorted(set(cshares) - set(bshares))
+                removed_cats = sorted(set(bshares) - set(cshares))
+            else:
+                all_cats = set(bshares) & set(cshares)
+                new_cats = []
+                removed_cats = []
             max_shift, max_cat = 0.0, None
             for cat in all_cats:
                 shift = abs(float(cshares.get(cat, 0.0)) - float(bshares.get(cat, 0.0)))
@@ -355,9 +363,10 @@ def _business_rule_findings(df_b, df_c, mappings, lang):
         if not mapping.baseline_column or not mapping.compare_column:
             continue
         column = mapping.compare_column
-        lowered = column.lower()
+        parts = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", column)
+        tokens = set(re.findall(r"[a-z0-9]+", parts.lower()))
 
-        if "age" in lowered:
+        if "age" in tokens:
             bv = pd.to_numeric(df_b[mapping.baseline_column], errors="coerce")
             cv = pd.to_numeric(df_c[mapping.compare_column], errors="coerce")
             invalid_b = int(((bv < 0) | (bv > 120)).sum())
@@ -375,7 +384,7 @@ def _business_rule_findings(df_b, df_c, mappings, lang):
                     evidence={"sample_values": sample}, recommendation=reco,
                 ))
 
-        if "email" in lowered:
+        if "email" in tokens:
             bv = df_b[mapping.baseline_column].dropna().astype(str)
             cv = df_c[mapping.compare_column].dropna().astype(str)
             invalid_b = int((~bv.str.contains("@", regex=False)).sum())
@@ -393,7 +402,7 @@ def _business_rule_findings(df_b, df_c, mappings, lang):
                     evidence={"sample_values": sample}, recommendation=reco,
                 ))
 
-        if any(tok in lowered for tok in ["amount", "value", "price", "revenue", "ca", "montant", "lifetime"]):
+        if tokens.intersection({"amount", "value", "price", "revenue", "ca", "montant", "lifetime"}):
             bv = pd.to_numeric(df_b[mapping.baseline_column], errors="coerce")
             cv = pd.to_numeric(df_c[mapping.compare_column], errors="coerce")
             neg_b = int((bv < 0).sum())

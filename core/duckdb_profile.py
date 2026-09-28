@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 
 import duckdb
+import pandas as pd
 
 NUMERIC_TYPE_TOKENS = ("INT", "DOUBLE", "FLOAT", "DECIMAL")
 TEMPORAL_TYPE_TOKENS = ("DATE", "TIMESTAMP")
@@ -32,22 +33,23 @@ def _safe_float(value: Any) -> float | None:
         return None
 
 
-def duckdb_profile(csv_path: str | Path, top_categories: int = 20) -> dict:
+def duckdb_profile(csv_path: str | Path | pd.DataFrame, top_categories: int = 20) -> dict:
     """
     Build a profile dictionary compatible with core.profile.profile_dataframe,
     using DuckDB SQL aggregation instead of loading the full file into Pandas.
     """
-    path = str(Path(csv_path).resolve())
-
     con = duckdb.connect()
-
-    con.execute(
-        """
-        CREATE OR REPLACE TABLE dataset AS
-        SELECT * FROM read_csv_auto(?, header=true, sample_size=100000)
-        """,
-        [path],
-    )
+    if isinstance(csv_path, pd.DataFrame):
+        con.register("dataset", csv_path)
+    else:
+        path = str(Path(csv_path).resolve())
+        con.execute(
+            """
+            CREATE OR REPLACE TABLE dataset AS
+            SELECT * FROM read_csv_auto(?, header=true, sample_size=100000)
+            """,
+            [path],
+        )
 
     rows = int(con.execute("SELECT count(*) FROM dataset").fetchone()[0])
 
@@ -186,8 +188,9 @@ def duckdb_profile(csv_path: str | Path, top_categories: int = 20) -> dict:
                 WHERE {quoted} IS NOT NULL
                 GROUP BY 1
                 ORDER BY cnt DESC
-                LIMIT {int(top_categories)}
-                """
+                LIMIT ?
+                """,
+                [int(top_categories)],
             ).fetchall()
 
             non_null_count = rows - null_count
@@ -205,6 +208,7 @@ def duckdb_profile(csv_path: str | Path, top_categories: int = 20) -> dict:
                 "unique_count": unique_count,
                 "top_values": top_values,
                 "category_shares": category_shares,
+                "category_shares_complete": unique_count <= int(top_categories),
                 "dominant_share": float(value_counts[0][1] / non_null_count) if value_counts and non_null_count else 0.0,
             }
 
@@ -255,12 +259,13 @@ def duckdb_profile(csv_path: str | Path, top_categories: int = 20) -> dict:
         duplicate_keys = int(result[0] or 0)
         duplicate_rows = int(result[1] or 0)
         unique_count = int(column_profiles[column].get("unique_count", 0))
+        non_null_count = rows - int(column_profiles[column].get("null_count", 0))
 
         key_duplicates[column] = {
             "unique_count": unique_count,
             "duplicate_keys": duplicate_keys,
             "duplicate_rows": duplicate_rows,
-            "duplicate_rate": float(duplicate_rows / unique_count) if unique_count else 0.0,
+            "duplicate_rate": float(duplicate_rows / non_null_count) if non_null_count else 0.0,
         }
 
     con.close()

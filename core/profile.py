@@ -114,6 +114,7 @@ def _categorical_stats(series: pd.Series, top_n: int = 20) -> dict:
             "unique_count": 0,
             "top_values": [],
             "category_shares": {},
+            "category_shares_complete": True,
             "dominant_share": 0.0,
         }
 
@@ -130,9 +131,10 @@ def _categorical_stats(series: pd.Series, top_n: int = 20) -> dict:
 
     return {
         "count": int(total),
-        "unique_count": int(clean.nunique()),
+        "unique_count": int(len(value_counts)),
         "top_values": top_values,
         "category_shares": category_shares,
+        "category_shares_complete": len(value_counts) <= top_n,
         "dominant_share": dominant_share,
     }
 

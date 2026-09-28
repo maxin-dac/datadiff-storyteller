@@ -6,6 +6,7 @@ import streamlit as st
 
 from core.align import build_column_mappings
 from core.diff_engine import generate_findings
+from core.duckdb_profile import duckdb_profile
 from core.narrative import build_executive_summary
 from core.profile import profile_dataframe
 
@@ -16,8 +17,8 @@ def store_inputs(df_baseline, df_compare, meta_baseline, meta_compare, use_duckd
         "df_compare": df_compare,
         "meta_baseline": meta_baseline,
         "meta_compare": meta_compare,
-        "profile_baseline": profile_dataframe(df_baseline),
-        "profile_compare": profile_dataframe(df_compare),
+        "profile_baseline": duckdb_profile(df_baseline) if use_duckdb else profile_dataframe(df_baseline),
+        "profile_compare": duckdb_profile(df_compare) if use_duckdb else profile_dataframe(df_compare),
         "mappings": build_column_mappings(df_baseline, df_compare),
     }
 

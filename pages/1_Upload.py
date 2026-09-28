@@ -37,7 +37,7 @@ if st.button(t("btn_analyze", lang=_lang), type="primary", width="stretch"):
             df_b, meta_b = load_csv(BytesIO(raw_b), max_rows=int(max_rows), sep=sep_value, encoding=enc_value)
             df_c, meta_c = load_csv(BytesIO(raw_c), max_rows=int(max_rows), sep=sep_value, encoding=enc_value)
             meta_b["name"] = file_baseline.name; meta_c["name"] = file_compare.name
-            store_inputs(df_b, df_c, meta_b, meta_c)
+            store_inputs(df_b, df_c, meta_b, meta_c, use_duckdb=use_duckdb)
             analysis = run_analysis(_lang)
         common = [m for m in analysis["mappings"] if m.baseline_column and m.compare_column]
         if not common:

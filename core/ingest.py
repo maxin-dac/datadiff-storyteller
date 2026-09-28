@@ -92,7 +92,7 @@ def load_csv(
                 last_error = exc
                 continue
 
-            if df.empty:
+            if len(df.columns) == 0:
                 continue
 
             if len(df.columns) > best_columns:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import difflib
+from collections import defaultdict
 from typing import Optional
 
 import pandas as pd
@@ -29,8 +30,8 @@ def content_similarity(
     sample_size: int = 5_000,
     random_state: int = 42,
 ) -> float:
-    left_clean = left.dropna().astype(str)
-    right_clean = right.dropna().astype(str)
+    left_clean = left.dropna()
+    right_clean = right.dropna()
 
     if left_clean.empty and right_clean.empty:
         return 1.0
@@ -43,6 +44,9 @@ def content_similarity(
 
     if len(right_clean) > sample_size:
         right_clean = right_clean.sample(sample_size, random_state=random_state)
+
+    left_clean = left_clean.astype(str)
+    right_clean = right_clean.astype(str)
 
     left_set = set(left_clean.tolist())
     right_set = set(right_clean.tolist())
@@ -65,21 +69,42 @@ def build_column_mappings(
     baseline_columns = list(baseline_df.columns)
     compare_columns = list(compare_df.columns)
 
-    baseline_by_norm = {normalize_column_name(c): c for c in baseline_columns}
-    compare_by_norm = {normalize_column_name(c): c for c in compare_columns}
-
     mappings: list[ColumnMapping] = []
 
     used_baseline: set[str] = set()
     used_compare: set[str] = set()
 
-    # Exact normalized match.
-    for norm_name, baseline_col in baseline_by_norm.items():
-        compare_col = compare_by_norm.get(norm_name)
+    for baseline_col in baseline_columns:
+        if baseline_col not in compare_columns or baseline_col in used_baseline:
+            continue
+        mappings.append(
+            ColumnMapping(
+                baseline_column=baseline_col,
+                compare_column=baseline_col,
+                mapping_type="same",
+                confidence=1.0,
+            )
+        )
 
-        if compare_col is None:
+        used_baseline.add(baseline_col)
+        used_compare.add(baseline_col)
+
+    baseline_by_norm: dict[str, list[str]] = defaultdict(list)
+    compare_by_norm: dict[str, list[str]] = defaultdict(list)
+    for column in baseline_columns:
+        if column not in used_baseline:
+            baseline_by_norm[normalize_column_name(column)].append(column)
+    for column in compare_columns:
+        if column not in used_compare:
+            compare_by_norm[normalize_column_name(column)].append(column)
+
+    for norm_name, baseline_matches in baseline_by_norm.items():
+        compare_matches = compare_by_norm.get(norm_name, [])
+        if len(baseline_matches) != 1 or len(compare_matches) != 1:
             continue
 
+        baseline_col = baseline_matches[0]
+        compare_col = compare_matches[0]
         mappings.append(
             ColumnMapping(
                 baseline_column=baseline_col,
@@ -88,7 +113,6 @@ def build_column_mappings(
                 confidence=1.0,
             )
         )
-
         used_baseline.add(baseline_col)
         used_compare.add(compare_col)
 
