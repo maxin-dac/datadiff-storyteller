@@ -1,10 +1,8 @@
-# DataDiff Storyteller
+# 📁 DataDiff Storyteller
 
 Version anglaise : [README.md](README.md)
 
 Comparer deux versions d’un dataset et expliquer ce qui a changé sous forme de récit clair, structuré et exploitable par des métiers. L’outil ne se limite pas à un diff technique : il produit des findings structurés, une priorisation par sévérité, des diagnostics visuels et un rapport exportable.
-
-Interface bilingue FR / EN · comparaison CSV · dérive de schéma · dérive de qualité · changement de distribution · détection d’outliers · détection de doublons · narration automatique · Streamlit · Plotly · DuckDB · versioning GitHub Actions.
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.36%2B-FF4B4B?style=flat&logo=streamlit&logoColor=white)
@@ -20,11 +18,9 @@ Table des matières
 - [Objectif de l’application](#objectif-de-lapplication)
 - [Ce que l’outil analyse](#ce-que-loutil-analyse)
 - [Trois modes de lecture](#trois-modes-de-lecture)
-- [Interface et design](#interface-et-design)
 - [Données d’entrée](#données-dentrée)
 - [Principes méthodologiques](#principes-méthodologiques)
 - [Limitations assumées](#limitations-assumées)
-- [Déploiement et versioning automatique](#déploiement-et-versioning-automatique)
 - [Installation locale](#installation-locale)
 - [Structure du projet](#structure-du-projet)
 - [Feuille de route](#feuille-de-route)
@@ -112,20 +108,6 @@ La page Rapport génère un résumé narratif et exporte l’analyse complète e
 
 Ce mode est destiné à la restitution formelle.
 
-## Interface et design
-
-L’interface suit un design system sobre :
-
-- bascule linguistique FR / EN ;
-- jeu d’icônes SVG, sans emojis ;
-- navigation groupée en sections sémantiques ;
-- couleurs de sévérité utilisées uniquement pour signaler le risque ;
-- cartes de findings avec récit, métriques et recommandation ;
-- graphiques Plotly utilisant la même typographie que l’application ;
-- états vides et messages d’erreur explicites.
-
-Le changement de langue modifie l’interface, les titres de findings, les récits, les recommandations, le résumé exécutif et les rapports exportés. Il ne traduit pas les valeurs issues des données sources, comme les noms de colonnes, les valeurs de catégories ou les enregistrements exemples. Ce comportement est volontaire.
-
 ## Données d’entrée
 
 Le MVP accepte des fichiers texte délimités, principalement CSV.
@@ -172,33 +154,6 @@ Ces limitations sont assumées dans le MVP actuel :
 - le profilage DuckDB est disponible en mode expérimental, tandis que le moteur de diff détaillé repose encore sur pandas ;
 - les seuils statistiques sont implémentés dans le code mais pas encore entièrement exposés dans l’UI ;
 - l’outil explique des changements, il ne répare pas les données automatiquement.
-
-## Déploiement et versioning automatique
-
-Cibles de déploiement recommandées :
-
-- Streamlit Cloud pour le MVP public le plus simple ;
-- Render pour un hébergement Docker ;
-- Railway pour un déploiement managé avec plus de contrôle.
-
-Le dépôt inclut un workflow GitHub Actions qui versionne automatiquement l’application à chaque push sur main.
-
-Logique de versioning :
-
-    feat: ...       -> bump mineur
-    fix: ...        -> bump patch
-    chore: ...      -> bump patch
-    refactor!: ...  -> bump majeur
-    BREAKING CHANGE -> bump majeur
-
-Le workflow met à jour :
-
-- VERSION ;
-- CHANGELOG.md ;
-- un tag Git ;
-- une release GitHub.
-
-La convention de commit fait donc partie du processus de release.
 
 ## Installation locale
 
