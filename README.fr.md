@@ -200,6 +200,22 @@ Ouvrir :
 
     http://localhost:8501
 
+## Démonstration en ligne
+
+Tester DataDiff Storyteller en ligne :
+
+<p align="left">
+  <a href="https://datadiff.streamlit.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Ouvrir_Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Ouvrir Streamlit Cloud" />
+  </a>
+
+  <a href="https://datadiff.onrender.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Ouvrir_Render-0A2C3A?style=for-the-badge&logo=render&logoColor=white" alt="Ouvrir Render" />
+  </a>
+</p>
+
+Les démonstrations publiques peuvent se réveiller après une période d’inactivité. Si un lien est lent, rechargez une fois.
+
 ## Structure du projet
 
     datadiff-storyteller/
@@ -254,6 +270,7 @@ Ouvrir :
     ├── LICENSE
     ├── README.md
     ├── README.fr.md
+    ├── render.yaml
     ├── requirements.txt
     └── VERSION
 
