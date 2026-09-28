@@ -1,8 +1,8 @@
 [theme]
 base = "light"
 primaryColor = "#2563eb"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f8fafc"
+backgroundColor = "#f5f7fb"
+secondaryBackgroundColor = "#ffffff"
 textColor = "#0f172a"
 font = "sans serif"
 
@@ -10,7 +10,7 @@ font = "sans serif"
 gatherUsageStats = false
 
 [server]
-headless = true
-port = 8501
+headless = false
+port = 8502
 address = "0.0.0.0"
 enableXsrfProtection = true

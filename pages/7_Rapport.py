@@ -29,8 +29,8 @@ js = json.dumps({"meta": {"baseline": mb, "compare": mc}, "summary": summary, "f
 html = render_html_report(summary, findings, mb, mc, lang=_lang)
 c1, c2, c3 = st.columns(3)
 with c1:
-    st.download_button(label=t("btn_md", lang=_lang), data=md, file_name="datadiff_report.md", mime="text/markdown", use_container_width=True)
+    st.download_button(label=t("btn_md", lang=_lang), data=md, file_name="datadiff_report.md", mime="text/markdown", width="stretch")
 with c2:
-    st.download_button(label=t("btn_json", lang=_lang), data=js, file_name="datadiff_report.json", mime="application/json", use_container_width=True)
+    st.download_button(label=t("btn_json", lang=_lang), data=js, file_name="datadiff_report.json", mime="application/json", width="stretch")
 with c3:
-    st.download_button(label=t("btn_html", lang=_lang), data=html, file_name="datadiff_report.html", mime="text/html", use_container_width=True)
+    st.download_button(label=t("btn_html", lang=_lang), data=html, file_name="datadiff_report.html", mime="text/html", width="stretch")

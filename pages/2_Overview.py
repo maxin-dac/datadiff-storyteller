@@ -47,7 +47,7 @@ for m in analysis["mappings"]:
     rows.append({"column": m.compare_column, "baseline": float(pb["column_profiles"].get(m.baseline_column, {}).get("null_rate", 0.0)), "compare": float(pc["column_profiles"].get(m.compare_column, {}).get("null_rate", 0.0))})
 if rows:
     ndf = pd.DataFrame(rows).melt(id_vars="column", var_name="version", value_name="null_rate")
-    st.plotly_chart(grouped_bar(ndf, x="column", y="null_rate", color="version", title=t("chart_null_title", lang=_lang)), use_container_width=True)
+    st.plotly_chart(grouped_bar(ndf, x="column", y="null_rate", color="version", title=t("chart_null_title", lang=_lang)), width="stretch")
 else:
     st.info(t("info_no_common_col", lang=_lang))
 section(t("sec_top_findings", lang=_lang), "anomaly")

@@ -18,10 +18,12 @@ st.set_page_config(
 from components.layout import sidebar_brand
 from core.i18n import get_lang, t
 
+# Rail de marque + selecteur de langue dans le sidebar.
+# La navigation, elle, est rendue en haut (voir st.navigation plus bas).
 sidebar_brand()
 
 if not (hasattr(st, "navigation") and hasattr(st, "Page")):
-    st.error('Streamlit trop ancien. Executez : pip install --upgrade "streamlit>=1.36.0"')
+    st.error('Streamlit trop ancien. Executez : pip install --upgrade "streamlit>=1.49.0"')
     st.stop()
 
 _lang = get_lang()
@@ -50,9 +52,22 @@ pages = [
     make_page("pages/7_Rapport.py", "page_report", "rapport", "nav_group_export", False),
 ]
 
-try:
-    selected = st.navigation(pages, position="sidebar", view="expanded")
-except TypeError:
-    selected = st.navigation(pages, position="sidebar")
+# Cascade robuste : barre horizontale en haut si la version le permet,
+# sinon repli sur le sidebar (comportement precedent).
+selected = None
+for attempt in (
+    lambda: st.navigation(pages, position="top"),
+    lambda: st.navigation(pages, position="sidebar", view="expanded"),
+    lambda: st.navigation(pages, position="sidebar"),
+):
+    try:
+        selected = attempt()
+        break
+    except (TypeError, ValueError):
+        continue
+
+if selected is None:
+    st.error("Impossible d'initialiser la navigation. Mets a jour Streamlit : pip install --upgrade streamlit")
+    st.stop()
 
 selected.run()

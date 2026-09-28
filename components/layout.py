@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+import json
 import re
 from html import escape
 from pathlib import Path
+from typing import Any
 
 import streamlit as st
 
 from components.icons import icon
-from core.i18n import AVAILABLE_LANGS, get_lang, t
+from core.i18n import get_lang, t
 from models.schemas import Finding
 
 ROOT = Path(__file__).resolve().parents[1]
 LOGO_PATH = ROOT / "assets" / "logo.svg"
+VERSION_PATH = ROOT / "VERSION"
 
-LOGO_SVG = r'''
+LOGO_SVG = """
 <svg viewBox="0 0 64 64" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <rect x="2" y="2" width="60" height="60" rx="15" fill="currentColor" fill-opacity="0.12"/>
   <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="currentColor" fill-opacity="0.95"/>
@@ -22,13 +25,14 @@ LOGO_SVG = r'''
   <path d="M43 18l5 5-5 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M48 23H39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
 </svg>
-'''
+"""
 
-BRAND_LOGO_SVG = r'''
-<svg viewBox="0 0 64 64" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo DataDiff Storyteller">
+BRAND_LOGO_SVG = """
+<svg viewBox="0 0 64 64" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo DataDiff Storyteller">
   <defs>
     <linearGradient id="ddsBrandGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563EB"/><stop offset="1" stop-color="#7C3AED"/>
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#ddsBrandGrad)"/>
@@ -38,36 +42,34 @@ BRAND_LOGO_SVG = r'''
   <path d="M43 18l5 5-5 5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M48 23H39" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
 </svg>
-'''
-
-BRAND_STYLE = r'''
-<style>
-.sidebar-brand{display:flex;align-items:center;gap:.7rem;padding:.8rem .75rem;margin:.15rem 0 .35rem;border-radius:14px;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #e2e8f0;box-shadow:0 1px 2px rgba(15,23,42,.05);}
-.sidebar-brand-logo{width:40px;height:40px;flex:0 0 auto;display:inline-flex;}
-.sidebar-brand-logo svg{width:100%;height:100%;display:block;}
-.sidebar-brand-text{min-width:0;}
-.sidebar-brand-name{font-size:1.04rem;font-weight:800;letter-spacing:-.02em;color:#0f172a;line-height:1.15;}
-.sidebar-brand-sub{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#64748b;margin-top:.18rem;}
-hr.sidebar-brand-divider{border:none;border-top:1px solid #e2e8f0;margin:.1rem .25rem .35rem;}
-.lang-row{display:flex;align-items:center;gap:.5rem;padding:0 .25rem .55rem;}
-.lang-row-label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;white-space:nowrap;}
-</style>
-'''
-
-BRAND_BODY = r'''
-<div class="sidebar-brand">
-  <span class="sidebar-brand-logo">__LOGO__</span>
-  <span class="sidebar-brand-text">
-    <span class="sidebar-brand-name">__NAME__</span>
-    <span class="sidebar-brand-sub">__SUB__</span>
-  </span>
-</div>
-<hr class="sidebar-brand-divider">
-'''
+"""
 
 CATEGORY_ICONS = {
-    "schema": "schema", "volume": "database", "nulls": "quality", "distribution": "distribution",
-    "outliers": "anomaly", "duplicates": "warning", "quality": "check", "business_rule": "warning",
+    "schema": "schema",
+    "volume": "database",
+    "nulls": "quality",
+    "distribution": "distribution",
+    "outliers": "anomaly",
+    "duplicates": "warning",
+    "quality": "check",
+    "business_rule": "warning",
+}
+
+SEVERITY_LABELS = {
+    "fr": {
+        "critical": "Critique",
+        "high": "Élevé",
+        "medium": "Moyen",
+        "low": "Faible",
+        "info": "Info",
+    },
+    "en": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "info": "Info",
+    },
 }
 
 
@@ -86,12 +88,102 @@ def _minify_svg(svg: str) -> str:
     return " ".join(svg.split())
 
 
+def _read_version() -> str:
+    try:
+        value = VERSION_PATH.read_text(encoding="utf-8").strip()
+        return value or "0.0.0"
+    except Exception:
+        return "0.0.0"
+
+
 def inline_logo(size: int = 32, css_class: str = "app-logo") -> str:
     return f'<span class="{css_class}" style="--logo-size:{size}px">{_minify_svg(LOGO_SVG)}</span>'
 
 
+def _severity_label(severity: str, lang: str) -> str:
+    return SEVERITY_LABELS.get(lang, SEVERITY_LABELS["fr"]).get(severity, severity)
+
+
+def _format_metric_value(value: Any) -> str:
+    if hasattr(value, "item"):
+        try:
+            value = value.item()
+        except Exception:
+            pass
+
+    if value is None:
+        return "n/a"
+
+    if isinstance(value, bool):
+        return "true" if value else "false"
+
+    if isinstance(value, int):
+        return f"{value:,}"
+
+    if isinstance(value, float):
+        if value != value:
+            return "n/a"
+        if float(value).is_integer():
+            return f"{int(value):,}"
+        return f"{value:,.4f}".rstrip("0").rstrip(".")
+
+    if isinstance(value, (list, tuple, set)):
+        return ", ".join(_format_metric_value(item) for item in value)
+
+    if isinstance(value, dict):
+        return json.dumps(value, ensure_ascii=False, default=str)
+
+    return str(value)
+
+
+def _metrics_details(metrics: dict, lang: str) -> str:
+    if not metrics:
+        return ""
+
+    rows = []
+    for key, value in metrics.items():
+        rows.append(
+            "".join([
+                "<tr>",
+                f"<th>{escape(str(key))}</th>",
+                f"<td>{escape(_format_metric_value(value))}</td>",
+                "</tr>",
+            ])
+        )
+
+    return "".join([
+        '<details class="dds-details">',
+        f'<summary>{escape(t("doc_metrics", lang=lang))}</summary>',
+        '<table class="dds-mini-table"><tbody>',
+        "".join(rows),
+        "</tbody></table>",
+        "</details>",
+    ])
+
+
+def _evidence_details(evidence: dict, lang: str) -> str:
+    if not evidence:
+        return ""
+
+    try:
+        payload = json.dumps(evidence, ensure_ascii=False, indent=2, default=str)
+    except Exception:
+        payload = str(evidence)
+
+    if len(payload) > 4000:
+        payload = payload[:4000] + "..."
+
+    return "".join([
+        '<details class="dds-details">',
+        f'<summary>{escape(t("doc_evidence", lang=lang))}</summary>',
+        f'<pre class="dds-pre">{escape(payload)}</pre>',
+        "</details>",
+    ])
+
+
 def _on_lang_change() -> None:
     from core.analysis import has_inputs, run_analysis
+
     if has_inputs():
         try:
             run_analysis(get_lang())
@@ -101,21 +193,28 @@ def _on_lang_change() -> None:
 
 def sidebar_brand() -> None:
     lang = get_lang()
-    body = (
-        BRAND_BODY
-        .replace("__LOGO__", _minify_svg(BRAND_LOGO_SVG))
-        .replace("__NAME__", escape(t("brand_name", lang=lang)))
-        .replace("__SUB__", escape(t("brand_sub", lang=lang)))
-    )
-    st.sidebar.markdown(BRAND_STYLE + body, unsafe_allow_html=True)
+    version = _read_version()
+    logo = _minify_svg(BRAND_LOGO_SVG)
+
+    body = "".join([
+        '<div class="dds-sidebar-brand">',
+        f'<span class="dds-sidebar-brand-logo">{logo}</span>',
+        '<span class="dds-sidebar-brand-text">',
+        f'<span class="dds-sidebar-brand-name">{escape(t("brand_name", lang=lang))}</span>',
+        f'<span class="dds-sidebar-brand-sub">{escape(t("brand_sub", lang=lang))}</span>',
+        f'<span class="dds-sidebar-brand-version">v{escape(version)}</span>',
+        "</span>",
+        "</div>",
+        '<div class="dds-sidebar-rule"></div>',
+        f'<div class="dds-sidebar-lang-label">{escape(t("lang_label", lang=lang))}</div>',
+    ])
+
+    st.sidebar.markdown(body, unsafe_allow_html=True)
 
     labels = {"fr": "FR", "en": "EN"}
     order = ["fr", "en"]
     index = order.index(lang) if lang in order else 0
-    st.sidebar.markdown(
-        f'<div class="lang-row"><span class="lang-row-label">{escape(t("lang_label", lang=lang))}</span></div>',
-        unsafe_allow_html=True,
-    )
+
     st.sidebar.radio(
         t("lang_label", lang=lang),
         options=order,
@@ -130,87 +229,138 @@ def sidebar_brand() -> None:
 
 def load_css() -> None:
     css_path = ROOT / "assets" / "styles.css"
+
     if not css_path.exists():
         return
+
     css = css_path.read_text(encoding="utf-8")
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     css = " ".join(css.split())
+
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 
 def page_header(title: str, subtitle: str) -> None:
     _html(
         "".join([
-            '<div class="dds-header">',
-            '<div class="dds-header-brand">',
-            inline_logo(42),
-            '<div class="dds-header-text">',
-            f'<div class="dds-title">{escape(title)}</div>',
-            f'<div class="dds-subtitle">{escape(subtitle)}</div>',
-            '</div>', '</div>', '</div>',
+            '<header class="dds-page-header">',
+            '<div class="dds-page-header-brand">',
+            inline_logo(40),
+            '<div class="dds-page-header-text">',
+            f'<h1 class="dds-page-title">{escape(title)}</h1>',
+            f'<p class="dds-page-subtitle">{escape(subtitle)}</p>',
+            "</div>",
+            "</div>",
+            "</header>",
         ])
     )
 
 
 def section(title: str, icon_name: str | None = None) -> None:
     icon_html = icon(icon_name, size=18) if icon_name else ""
-    _html("".join(['<div class="dds-section-title">', icon_html, f'<span>{escape(title)}</span>', '</div>']))
+
+    _html(
+        "".join([
+            '<div class="dds-section-heading">',
+            icon_html,
+            f"<h2>{escape(title)}</h2>",
+            "</div>",
+        ])
+    )
 
 
 def kpi_card(label: str, value: str, helper: str = "", tone: str = "neutral") -> str:
     return "".join([
-        f'<div class="kpi-card tone-{escape(tone)}">',
-        f'<div class="kpi-label">{escape(label)}</div>',
-        f'<div class="kpi-value">{escape(value)}</div>',
-        f'<div class="kpi-helper">{escape(helper)}</div>',
-        '</div>',
+        f'<article class="dds-kpi tone-{escape(tone)}">',
+        f'<div class="dds-kpi-label">{escape(label)}</div>',
+        f'<div class="dds-kpi-value">{escape(value)}</div>',
+        f'<div class="dds-kpi-helper">{escape(helper)}</div>',
+        "</article>",
     ])
 
 
 def kpi_grid(items: list[dict]) -> None:
     cards = "".join(
         kpi_card(
-            label=str(item.get("label", "")), value=str(item.get("value", "")),
-            helper=str(item.get("helper", "")), tone=str(item.get("tone", "neutral")),
+            label=str(item.get("label", "")),
+            value=str(item.get("value", "")),
+            helper=str(item.get("helper", "")),
+            tone=str(item.get("tone", "neutral")),
         )
         for item in items
     )
-    _html(f'<div class="kpi-grid">{cards}</div>')
+
+    _html(f'<div class="dds-kpi-grid">{cards}</div>')
 
 
 def finding_card(finding: Finding) -> None:
     lang = get_lang()
     icon_name = CATEGORY_ICONS.get(finding.category, "info")
-    columns = ", ".join(finding.columns) if finding.columns else t("card_na", lang=lang)
-    recommendation = finding.recommendation or t("card_no_reco", lang=lang)
-    _html(
-        "".join([
-            f'<article class="finding-card severity-{escape(finding.severity)}">',
-            '<header class="finding-card-header">',
-            '<div class="finding-card-title">',
-            icon(icon_name, size=18),
-            f'<strong>{escape(finding.title)}</strong>',
-            '</div>',
-            f'<span class="badge badge-{escape(finding.severity)}">{escape(finding.severity)}</span>',
-            '</header>',
-            f'<p class="finding-narrative">{escape(finding.narrative)}</p>',
-            '<div class="finding-meta">',
-            f'<span><strong>{escape(t("card_columns", lang=lang))}</strong> {escape(columns)}</span>',
-            f'<span><strong>{escape(t("card_category", lang=lang))}</strong> {escape(finding.category)}</span>',
-            '</div>',
-            f'<p class="finding-recommendation"><strong>{escape(t("card_recommendation", lang=lang))}</strong> {escape(recommendation)}</p>',
-            '</article>',
-        ])
-    )
+    severity_label = _severity_label(finding.severity, lang)
+    category_label = t(f"cat_{finding.category}", lang=lang)
+
+    chips = []
+
+    if finding.columns:
+        for column in finding.columns:
+            chips.append(f'<span class="dds-chip">{escape(str(column))}</span>')
+
+    chips.append(f'<span class="dds-chip dds-chip-category">{escape(category_label)}</span>')
+
+    parts = [
+        f'<article class="dds-finding severity-{escape(finding.severity)}">',
+        '<header class="dds-finding-header">',
+        '<div class="dds-finding-title">',
+        icon(icon_name, size=18),
+        f'<h3 class="dds-finding-heading">{escape(finding.title)}</h3>',
+        "</div>",
+        f'<span class="dds-badge badge-{escape(finding.severity)}">{escape(severity_label)}</span>',
+        "</header>",
+        f'<p class="dds-finding-narrative">{escape(finding.narrative)}</p>',
+        '<div class="dds-finding-meta">',
+        "".join(chips),
+        "</div>",
+    ]
+
+    if finding.recommendation:
+        parts.append(
+            "".join([
+                '<div class="dds-recommendation">',
+                f'<span class="dds-recommendation-label">{escape(t("card_recommendation", lang=lang))}</span>',
+                f"<span>{escape(finding.recommendation)}</span>",
+                "</div>",
+            ])
+        )
+
+    parts.append(_metrics_details(finding.metrics or {}, lang))
+    parts.append(_evidence_details(finding.evidence or {}, lang))
+    parts.append("</article>")
+
+    _html("".join(parts))
 
 
 def empty_state(title: str, message: str, icon_name: str = "upload") -> None:
-    _html("".join(['<div class="empty-state">', icon(icon_name, size=42), f'<h3>{escape(title)}</h3>', f'<p>{escape(message)}</p>', '</div>']))
+    _html(
+        "".join([
+            '<div class="dds-empty">',
+            '<div class="dds-empty-art">',
+            icon(icon_name, 42),
+            "</div>",
+            f"<h3>{escape(title)}</h3>",
+            f"<p>{escape(message)}</p>",
+            "</div>",
+        ])
+    )
 
 
 def require_analysis() -> dict:
     if "analysis" not in st.session_state:
         lang = get_lang()
-        empty_state(t("home_no_analysis", lang=lang), t("home_no_analysis_msg", lang=lang), icon_name="upload")
+        empty_state(
+            t("home_no_analysis", lang=lang),
+            t("home_no_analysis_msg", lang=lang),
+            icon_name="upload",
+        )
         st.stop()
+
     return st.session_state["analysis"]

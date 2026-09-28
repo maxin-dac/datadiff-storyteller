@@ -28,7 +28,7 @@ if "numeric" in bprof and "numeric" in cprof:
     keys = ["count", "min", "max", "mean", "std", "q05", "q25", "q50", "q75", "q95", "outlier_rate"]
     sdf = pd.DataFrame([{"metric": k, "baseline": bprof["numeric"].get(k), "compare": cprof["numeric"].get(k)} for k in keys])
     sdf["delta"] = pd.to_numeric(sdf["compare"], errors="coerce") - pd.to_numeric(sdf["baseline"], errors="coerce")
-    st.dataframe(sdf, use_container_width=True, hide_index=True)
+    st.dataframe(sdf, width="stretch", hide_index=True)
     bv = pd.to_numeric(df_b[bcol], errors="coerce").dropna().astype(float); cv = pd.to_numeric(df_c[ccol], errors="coerce").dropna().astype(float)
     if bv.empty or cv.empty:
         st.info(t("info_not_enough_numeric", lang=_lang))
@@ -36,9 +36,9 @@ if "numeric" in bprof and "numeric" in cprof:
         n = 25000
         if len(bv) > n: bv = bv.sample(n, random_state=1)
         if len(cv) > n: cv = cv.sample(n, random_state=1)
-        st.plotly_chart(histogram_compare(bv, cv, ccol, title=t("chart_hist_title", lang=_lang, column=ccol), y_title=t("axis_density", lang=_lang)), use_container_width=True)
+        st.plotly_chart(histogram_compare(bv, cv, ccol, title=t("chart_hist_title", lang=_lang, column=ccol), y_title=t("axis_density", lang=_lang)), width="stretch")
         box_df = pd.DataFrame({ccol: pd.concat([bv, cv], ignore_index=True), "version": [t("legend_baseline", lang=_lang)] * len(bv) + [t("legend_compare", lang=_lang)] * len(cv)})
-        st.plotly_chart(box_compare(box_df, value_column=ccol, version_column="version", column=ccol, title=t("chart_box_title", lang=_lang, column=ccol)), use_container_width=True)
+        st.plotly_chart(box_compare(box_df, value_column=ccol, version_column="version", column=ccol, title=t("chart_box_title", lang=_lang, column=ccol)), width="stretch")
 elif "categorical" in bprof and "categorical" in cprof:
     bs = bprof["categorical"].get("category_shares", {}); cs = cprof["categorical"].get("category_shares", {})
     cats = sorted(set(bs) | set(cs))[:20]
@@ -50,8 +50,8 @@ elif "categorical" in bprof and "categorical" in cprof:
             rows.append({"category": cat, "version": t("legend_baseline", lang=_lang), "share": float(bs.get(cat, 0.0))})
             rows.append({"category": cat, "version": t("legend_compare", lang=_lang), "share": float(cs.get(cat, 0.0))})
         cdf = pd.DataFrame(rows)
-        st.dataframe(cdf, use_container_width=True, hide_index=True)
-        st.plotly_chart(categorical_compare(cdf, value_column="category", share_column="share", version_column="version", column=ccol, title=t("chart_cat_title", lang=_lang, column=ccol), y_title=t("axis_share", lang=_lang), x_title=t("axis_category", lang=_lang)), use_container_width=True)
+        st.dataframe(cdf, width="stretch", hide_index=True)
+        st.plotly_chart(categorical_compare(cdf, value_column="category", share_column="share", version_column="version", column=ccol, title=t("chart_cat_title", lang=_lang, column=ccol), y_title=t("axis_share", lang=_lang), x_title=t("axis_category", lang=_lang)), width="stretch")
 else:
     st.info(t("info_no_profile", lang=_lang))
 section(t("sec_dist_findings", lang=_lang), "warning")

@@ -28,7 +28,7 @@ with col1:
 with col2:
     file_compare = st.file_uploader(t("file_compare", lang=_lang), type=["csv"], key="file_compare", help=t("file_compare_help", lang=_lang))
 section(t("sec_run", lang=_lang), "quality")
-if st.button(t("btn_analyze", lang=_lang), type="primary", use_container_width=True):
+if st.button(t("btn_analyze", lang=_lang), type="primary", width="stretch"):
     if file_baseline is None or file_compare is None:
         st.error(t("err_two_files", lang=_lang)); st.stop()
     try:

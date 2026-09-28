@@ -32,9 +32,9 @@ for m in mappings:
     rows.append({"column": m.compare_column, "baseline": br, "compare": cr, "delta": cr - br})
 if rows:
     qdf = pd.DataFrame(rows).sort_values("delta", ascending=False)
-    st.dataframe(qdf, use_container_width=True, hide_index=True, column_config={"baseline": st.column_config.NumberColumn(t("col_baseline", lang=_lang), format="percent"), "compare": st.column_config.NumberColumn(t("col_compare", lang=_lang), format="percent"), "delta": st.column_config.NumberColumn(t("col_delta", lang=_lang), format="percent")})
+    st.dataframe(qdf, width="stretch", hide_index=True, column_config={"baseline": st.column_config.NumberColumn(t("col_baseline", lang=_lang), format="percent"), "compare": st.column_config.NumberColumn(t("col_compare", lang=_lang), format="percent"), "delta": st.column_config.NumberColumn(t("col_delta", lang=_lang), format="percent")})
     cdf = qdf.melt(id_vars="column", var_name="version", value_name="null_rate")
-    st.plotly_chart(grouped_bar(cdf, x="column", y="null_rate", color="version", title=t("chart_null_by_col", lang=_lang)), use_container_width=True)
+    st.plotly_chart(grouped_bar(cdf, x="column", y="null_rate", color="version", title=t("chart_null_by_col", lang=_lang)), width="stretch")
 else:
     st.info(t("info_no_common_col", lang=_lang))
 section(t("sec_quality_findings", lang=_lang), "warning")

@@ -16,7 +16,7 @@ mappings = analysis["mappings"]; findings = analysis["findings"]
 rows = [{"baseline_column": m.baseline_column or "", "compare_column": m.compare_column or "", "mapping_type": m.mapping_type, "confidence": round(m.confidence, 3)} for m in mappings]
 section(t("sec_mappings", lang=_lang), "schema")
 if rows:
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, column_config={"confidence": st.column_config.NumberColumn(t("col_confidence", lang=_lang), min_value=0.0, max_value=1.0, format="percent")})
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True, column_config={"confidence": st.column_config.NumberColumn(t("col_confidence", lang=_lang), min_value=0.0, max_value=1.0, format="percent")})
 else:
     st.info(t("info_no_mapping", lang=_lang))
 section(t("sec_schema_findings", lang=_lang), "warning")
