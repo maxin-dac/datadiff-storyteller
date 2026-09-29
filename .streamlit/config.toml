@@ -11,7 +11,7 @@ gatherUsageStats = false
 
 [server]
 headless = false
-port = 8502
+port = 8501
 address = "0.0.0.0"
 enableXsrfProtection = true
 maxUploadSize = 50
