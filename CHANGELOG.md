@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.10 - 2026-09-29
+
+- Merge branch 'main' of https://github.com/maxin-dac/datadiff-storyteller
+
 ## v0.1.9 - 2026-09-29
 
 - Merge branch 'main' of https://github.com/maxin-dac/datadiff-storyteller
