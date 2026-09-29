@@ -29,7 +29,6 @@ Table of contents
 - [Assumed limitations](#assumed-limitations)
 - [Local installation](#local-installation)
 - [Project structure](#project-structure)
-- [Roadmap](#roadmap)
 - [Author](#author)
 - [License](#license)
 
@@ -225,26 +224,7 @@ Public demos may cold-start after inactivity. If a link is slow, reload once.
     datadiff-storyteller/
     ├── Home.py
     ├── pages/
-    │   ├── 0_Accueil.py
-    │   ├── 1_Upload.py
-    │   ├── 2_Overview.py
-    │   ├── 3_Schema.py
-    │   ├── 4_Quality.py
-    │   ├── 5_Distributions.py
-    │   ├── 6_Anomalies.py
-    │   └── 7_Rapport.py
     ├── core/
-    │   ├── align.py
-    │   ├── analysis.py
-    │   ├── diff_engine.py
-    │   ├── duckdb_profile.py
-    │   ├── findings.py
-    │   ├── i18n.py
-    │   ├── ingest.py
-    │   ├── narrative.py
-    │   ├── profile.py
-    │   ├── report_builder.py
-    │   └── scoring.py
     ├── models/
     │   └── schemas.py
     ├── components/

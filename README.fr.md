@@ -29,7 +29,6 @@ Table des matières
 - [Limitations assumées](#limitations-assumées)
 - [Installation locale](#installation-locale)
 - [Structure du projet](#structure-du-projet)
-- [Feuille de route](#feuille-de-route)
 - [Auteur](#auteur)
 - [Licence](#licence)
 
@@ -225,26 +224,7 @@ Les démonstrations publiques peuvent se réveiller après une période d’inac
     datadiff-storyteller/
     ├── Home.py
     ├── pages/
-    │   ├── 0_Accueil.py
-    │   ├── 1_Upload.py
-    │   ├── 2_Overview.py
-    │   ├── 3_Schema.py
-    │   ├── 4_Quality.py
-    │   ├── 5_Distributions.py
-    │   ├── 6_Anomalies.py
-    │   └── 7_Rapport.py
     ├── core/
-    │   ├── align.py
-    │   ├── analysis.py
-    │   ├── diff_engine.py
-    │   ├── duckdb_profile.py
-    │   ├── findings.py
-    │   ├── i18n.py
-    │   ├── ingest.py
-    │   ├── narrative.py
-    │   ├── profile.py
-    │   ├── report_builder.py
-    │   └── scoring.py
     ├── models/
     │   └── schemas.py
     ├── components/
