@@ -142,8 +142,6 @@ The application follows strict traceability rules:
 - statistical checks are generic and do not depend on a demo dataset;
 - business-rule checks are documented and currently keyword-based.
 
-The default narration engine is deterministic. A future LLM layer can reformulate findings, but it should never be allowed to generate facts without constrained input.
-
 ## Assumed limitations
 
 These limitations are assumed in the current MVP:

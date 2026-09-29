@@ -142,8 +142,6 @@ L’application suit des règles de traçabilité strictes :
 - les contrôles statistiques sont génériques et ne dépendent pas d’un dataset de démonstration ;
 - les contrôles de règles métier sont documentés et actuellement basés sur des mots-clés.
 
-Le moteur de narration par défaut est déterministe. Une future couche LLM peut reformuler les findings, mais elle ne doit jamais être autorisée à générer des faits sans entrée contrainte.
-
 ## Limitations assumées
 
 Ces limitations sont assumées dans le MVP actuel :
