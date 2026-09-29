@@ -6,11 +6,10 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from components.layout import load_css, page_header, section
+from components.layout import page_header, section
 from core.analysis import run_analysis, store_inputs
 from core.i18n import get_lang, t
 from core.ingest import load_csv
-load_css()
 _lang = get_lang()
 page_header(t("upload_title", lang=_lang), t("upload_subtitle", lang=_lang))
 st.sidebar.header(t("sidebar_import_settings", lang=_lang))

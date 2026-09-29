@@ -15,6 +15,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "nav_group_start": {"fr": "Démarrage", "en": "Getting started"},
     "nav_group_analysis": {"fr": "Analyse", "en": "Analysis"},
     "nav_group_export": {"fr": "Export", "en": "Export"},
+    "nav_views": {"fr": "Écrans de l'application", "en": "Application views"},
     # Page titles
     "page_home": {"fr": "Accueil", "en": "Home"},
     "page_upload": {"fr": "Importer", "en": "Import"},

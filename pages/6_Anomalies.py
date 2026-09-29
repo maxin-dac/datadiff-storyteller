@@ -5,9 +5,8 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from components.layout import finding_card, load_css, page_header, require_analysis, section
+from components.layout import finding_card, page_header, require_analysis, section
 from core.i18n import get_lang, t
-load_css()
 _lang = get_lang()
 page_header(t("anom_title", lang=_lang), t("anom_subtitle", lang=_lang))
 analysis = require_analysis()

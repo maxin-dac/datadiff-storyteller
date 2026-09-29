@@ -6,11 +6,10 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from components.layout import finding_card, load_css, page_header, require_analysis, section
+from components.layout import finding_card, page_header, require_analysis, section
 from core.i18n import get_lang, t
 from core.report_builder import build_markdown_report, render_html_report
 from core.scoring import sort_findings
-load_css()
 _lang = get_lang()
 page_header(t("report_title", lang=_lang), t("report_subtitle", lang=_lang))
 analysis = require_analysis()

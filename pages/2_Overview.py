@@ -7,10 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from components.charts import grouped_bar
-from components.layout import finding_card, kpi_grid, load_css, page_header, require_analysis, section
+from components.layout import finding_card, kpi_grid, page_header, require_analysis, section
 from core.i18n import get_lang, t
 from core.scoring import calculate_health_score, sort_findings
-load_css()
 _lang = get_lang()
 page_header(t("overview_title", lang=_lang), t("overview_subtitle", lang=_lang))
 analysis = require_analysis()

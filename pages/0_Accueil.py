@@ -5,10 +5,9 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from components.layout import empty_state, html_block, load_css, page_header, section
+from components.layout import empty_state, html_block, page_header, section
 from core.i18n import get_lang, t
 from core.scoring import sort_findings
-load_css()
 _lang = get_lang()
 page_header(t("home_title", lang=_lang), t("home_subtitle", lang=_lang))
 section(t("sec_how", lang=_lang), "info")

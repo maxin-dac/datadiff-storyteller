@@ -8,9 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from components.charts import box_compare, categorical_compare, histogram_compare
-from components.layout import finding_card, load_css, page_header, require_analysis, section
+from components.layout import finding_card, page_header, require_analysis, section
 from core.i18n import get_lang, t
-load_css()
 _lang = get_lang()
 page_header(t("dist_title", lang=_lang), t("dist_subtitle", lang=_lang))
 analysis = require_analysis()
