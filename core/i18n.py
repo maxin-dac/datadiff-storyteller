@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 try:
     import streamlit as _st
-except Exception:  # pragma: no cover - allows non-streamlit usage / tests
+except Exception: 
     _st = None
 
 DEFAULT_LANG = "fr"
