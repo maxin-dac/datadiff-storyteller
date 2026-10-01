@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="DataDiff Storyteller",
     page_icon=str(LOGO_PATH) if LOGO_PATH.exists() else None,
     layout="wide",
-    initial_sidebar_state="auto",
+    initial_sidebar_state="expanded",
 )
 
 from components.layout import load_css, sidebar_brand

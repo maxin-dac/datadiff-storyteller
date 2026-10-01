@@ -16,26 +16,15 @@ ROOT = Path(__file__).resolve().parents[1]
 LOGO_PATH = ROOT / "assets" / "logo.svg"
 VERSION_PATH = ROOT / "VERSION"
 
-LOGO_SVG = """
-<svg viewBox="0 0 64 64" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="currentColor" fill-opacity="0.12"/>
-  <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="currentColor" fill-opacity="0.95"/>
-  <path d="M17 23v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-  <path d="M17 32v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-opacity="0.72"/>
-  <path d="M43 18l5 5-5 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M48 23H39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-</svg>
-"""
-
 BRAND_LOGO_SVG = """
-<svg viewBox="0 0 64 64" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo DataDiff Storyteller">
+<svg viewBox="0 0 64 64" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo">
   <defs>
     <linearGradient id="ddsBrandGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563EB"/>
-      <stop offset="1" stop-color="#7C3AED"/>
+      <stop stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#4f46e5"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#ddsBrandGrad)"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#ddsBrandGrad)"/>
   <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="#FFFFFF" fill-opacity="0.95"/>
   <path d="M17 23v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
   <path d="M17 32v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.72"/>
@@ -97,7 +86,19 @@ def _read_version() -> str:
 
 
 def inline_logo(size: int = 32, css_class: str = "app-logo") -> str:
-    return f'<span class="{css_class}" style="--logo-size:{size}px">{_minify_svg(LOGO_SVG)}</span>'
+    return f'<span class="{css_class}" style="--logo-size:{size}px">{_minify_svg(LOGO_SVG) if False else ""}</span>'
+
+
+LOGO_SVG = """
+<svg viewBox="0 0 64 64" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="currentColor" fill-opacity="0.12"/>
+  <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="currentColor" fill-opacity="0.95"/>
+  <path d="M17 23v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M17 32v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-opacity="0.72"/>
+  <path d="M43 18l5 5-5 5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M48 23H39" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+</svg>
+"""
 
 
 def _severity_label(severity: str, lang: str) -> str:
@@ -197,16 +198,15 @@ def sidebar_brand() -> None:
     logo = _minify_svg(BRAND_LOGO_SVG)
 
     body = "".join([
-        '<div class="dds-sidebar-brand">',
-        f'<span class="dds-sidebar-brand-logo">{logo}</span>',
-        '<span class="dds-sidebar-brand-text">',
-        f'<span class="dds-sidebar-brand-name">{escape(t("brand_name", lang=lang))}</span>',
-        f'<span class="dds-sidebar-brand-sub">{escape(t("brand_sub", lang=lang))}</span>',
-        f'<span class="dds-sidebar-brand-version">v{escape(version)}</span>',
-        "</span>",
+        f'<div class="idcard">',
+        f'<div class="logo-wrap">{logo}</div>',
+        '<div class="idmeta">',
+        f'<div class="idtitle">{escape(t("brand_name", lang=lang))}</div>',
+        f'<div class="idsub">{escape(t("brand_sub", lang=lang))}</div>',
+        f'<span class="idver">v{escape(version)}</span>',
         "</div>",
-        '<div class="dds-sidebar-rule"></div>',
-        f'<div class="dds-sidebar-lang-label">{escape(t("lang_label", lang=lang))}</div>',
+        "</div>",
+        f'<div class="lang-label">{escape(t("lang_label", lang=lang))}</div>',
     ])
 
     st.sidebar.markdown(body, unsafe_allow_html=True)
@@ -243,27 +243,21 @@ def load_css() -> None:
 def page_header(title: str, subtitle: str) -> None:
     _html(
         "".join([
-            '<header class="dds-page-header">',
-            '<div class="dds-page-header-brand">',
-            inline_logo(40),
-            '<div class="dds-page-header-text">',
-            f'<h1 class="dds-page-title">{escape(title)}</h1>',
-            f'<p class="dds-page-subtitle">{escape(subtitle)}</p>',
+            '<div class="pg-h">',
+            f"<h1>{escape(title)}</h1>",
+            f"<p>{escape(subtitle)}</p>",
             "</div>",
-            "</div>",
-            "</header>",
         ])
     )
 
 
 def section(title: str, icon_name: str | None = None) -> None:
     icon_html = icon(icon_name, size=18) if icon_name else ""
-
     _html(
         "".join([
-            '<div class="dds-section-heading">',
+            '<div class="sec-h">',
             icon_html,
-            f"<h2>{escape(title)}</h2>",
+            f"<span>{escape(title)}</span>",
             "</div>",
         ])
     )
@@ -271,11 +265,11 @@ def section(title: str, icon_name: str | None = None) -> None:
 
 def kpi_card(label: str, value: str, helper: str = "", tone: str = "neutral") -> str:
     return "".join([
-        f'<article class="dds-kpi tone-{escape(tone)}">',
-        f'<div class="dds-kpi-label">{escape(label)}</div>',
-        f'<div class="dds-kpi-value">{escape(value)}</div>',
-        f'<div class="dds-kpi-helper">{escape(helper)}</div>',
-        "</article>",
+        f'<div class="kvcell tone-{escape(tone)}">',
+        f'<div class="k">{escape(label)}</div>',
+        f'<div class="v">{escape(value)}</div>',
+        f'<div class="note">{escape(helper)}</div>',
+        "</div>",
     ])
 
 
@@ -290,7 +284,7 @@ def kpi_grid(items: list[dict]) -> None:
         for item in items
     )
 
-    _html(f'<div class="dds-kpi-grid">{cards}</div>')
+    _html(f'<div class="kvgrid">{cards}</div>')
 
 
 def finding_card(finding: Finding) -> None:
@@ -308,7 +302,7 @@ def finding_card(finding: Finding) -> None:
     chips.append(f'<span class="dds-chip dds-chip-category">{escape(category_label)}</span>')
 
     parts = [
-        f'<article class="dds-finding severity-{escape(finding.severity)}">',
+        f'<div class="dds-finding severity-{escape(finding.severity)}">',
         '<header class="dds-finding-header">',
         '<div class="dds-finding-title">',
         icon(icon_name, size=18),
@@ -334,7 +328,7 @@ def finding_card(finding: Finding) -> None:
 
     parts.append(_metrics_details(finding.metrics or {}, lang))
     parts.append(_evidence_details(finding.evidence or {}, lang))
-    parts.append("</article>")
+    parts.append("</div>")
 
     _html("".join(parts))
 
