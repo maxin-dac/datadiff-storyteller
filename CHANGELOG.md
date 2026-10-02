@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.0 - 2026-10-02
+
+- feat: enhance UI components and add language support
+
 ## v0.1.17 - 2026-10-01
 
 - Merge branch 'main' of https://github.com/maxin-dac/datadiff-storyteller
