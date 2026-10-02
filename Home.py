@@ -15,13 +15,11 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-from components.layout import load_css, sidebar_brand
+from components.layout import load_css, on_language_change, render_brand
 from core.i18n import get_lang, t
 
 load_css()
-sidebar_brand()
 
-_lang = get_lang()
 VIEW_PATHS = {
     "page_home": "pages/0_Accueil.py",
     "page_upload": "pages/1_Upload.py",
@@ -35,17 +33,33 @@ VIEW_PATHS = {
 
 
 def render_selected_view() -> None:
-    with st.container(key="dds-top-nav"):
-        view_key = st.segmented_control(
-            t("nav_views", lang=_lang),
-            options=list(VIEW_PATHS),
-            format_func=lambda key: t(key, lang=_lang),
-            default="page_upload",
-            key="active_view",
-            label_visibility="collapsed",
-            width="stretch",
-            required=True,
-        )
+    lang = get_lang()
+    with st.container(key="suite-topbar"):
+        nav_col, language_col, brand_col = st.columns([6.7, 1.1, 2.2])
+        with nav_col:
+            view_key = st.segmented_control(
+                t("nav_views", lang=lang),
+                options=list(VIEW_PATHS),
+                format_func=lambda key: t(key, lang=lang),
+                default=st.session_state.get("active_view", "page_upload"),
+                key="suite-nav",
+                required=True,
+                label_visibility="collapsed",
+                width="stretch",
+            )
+        with language_col:
+            st.segmented_control(
+                t("lang_label", lang=lang),
+                options=["fr", "en"],
+                format_func=lambda value: value.upper(),
+                key="lang",
+                required=True,
+                label_visibility="collapsed",
+                on_change=on_language_change,
+            )
+        with brand_col:
+            render_brand()
+    st.session_state.active_view = view_key
     runpy.run_path(str(ROOT / VIEW_PATHS[view_key]), run_name="__main__")
 
 

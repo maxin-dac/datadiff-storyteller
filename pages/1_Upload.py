@@ -12,14 +12,14 @@ from core.i18n import get_lang, t
 from core.ingest import load_csv
 _lang = get_lang()
 page_header(t("upload_title", lang=_lang), t("upload_subtitle", lang=_lang))
-st.sidebar.header(t("sidebar_import_settings", lang=_lang))
-max_rows = st.sidebar.number_input(t("opt_max_rows", lang=_lang), min_value=100, max_value=2000000, value=200000, step=10000, help=t("opt_max_rows_help", lang=_lang))
-sep_map = {"sep_auto": "auto", "sep_comma": ",", "sep_semicolon": ";", "sep_tab": "\t", "sep_pipe": "|"}
-sep_label = st.sidebar.selectbox(t("opt_separator", lang=_lang), list(sep_map.keys()), index=0, help=t("opt_separator_help", lang=_lang))
+with st.expander(t("sidebar_import_settings", lang=_lang), expanded=False):
+    max_rows = st.number_input(t("opt_max_rows", lang=_lang), min_value=100, max_value=2000000, value=200000, step=10000, help=t("opt_max_rows_help", lang=_lang))
+    sep_map = {"sep_auto": "auto", "sep_comma": ",", "sep_semicolon": ";", "sep_tab": "\t", "sep_pipe": "|"}
+    sep_label = st.selectbox(t("opt_separator", lang=_lang), list(sep_map.keys()), index=0, help=t("opt_separator_help", lang=_lang))
+    enc_options = ["auto", "utf-8", "utf-8-sig", "latin1", "cp1252"]
+    enc_value = st.selectbox(t("opt_encoding", lang=_lang), enc_options, index=0, help=t("opt_encoding_help", lang=_lang))
+    use_duckdb = st.checkbox(t("opt_duckdb", lang=_lang), value=False, help=t("opt_duckdb_help", lang=_lang))
 sep_value = sep_map[sep_label]
-enc_options = ["auto", "utf-8", "utf-8-sig", "latin1", "cp1252"]
-enc_value = st.sidebar.selectbox(t("opt_encoding", lang=_lang), enc_options, index=0, help=t("opt_encoding_help", lang=_lang))
-use_duckdb = st.sidebar.checkbox(t("opt_duckdb", lang=_lang), value=False, help=t("opt_duckdb_help", lang=_lang))
 section(t("sec_files", lang=_lang), "upload")
 col1, col2 = st.columns(2)
 with col1:

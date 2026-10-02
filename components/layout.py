@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from html import escape
 from pathlib import Path
@@ -182,7 +183,7 @@ def _evidence_details(evidence: dict, lang: str) -> str:
     ])
 
 
-def _on_lang_change() -> None:
+def on_language_change() -> None:
     from core.analysis import has_inputs, run_analysis
 
     if has_inputs():
@@ -192,7 +193,7 @@ def _on_lang_change() -> None:
             pass
 
 
-def sidebar_brand() -> None:
+def render_brand() -> None:
     lang = get_lang()
     version = _read_version()
     logo = _minify_svg(BRAND_LOGO_SVG)
@@ -206,34 +207,20 @@ def sidebar_brand() -> None:
         f'<span class="idver">v{escape(version)}</span>',
         "</div>",
         "</div>",
-        f'<div class="lang-label">{escape(t("lang_label", lang=lang))}</div>',
     ])
 
-    st.sidebar.markdown(body, unsafe_allow_html=True)
-
-    labels = {"fr": "FR", "en": "EN"}
-    order = ["fr", "en"]
-    index = order.index(lang) if lang in order else 0
-
-    st.sidebar.radio(
-        t("lang_label", lang=lang),
-        options=order,
-        index=index,
-        format_func=lambda x: labels[x],
-        key="lang",
-        horizontal=True,
-        label_visibility="collapsed",
-        on_change=_on_lang_change,
-    )
-
+    st.markdown(body, unsafe_allow_html=True)
 
 def load_css() -> None:
     css_path = ROOT / "assets" / "styles.css"
+    suite_css_path = ROOT / "assets" / "suite.css"
 
     if not css_path.exists():
         return
 
     css = css_path.read_text(encoding="utf-8")
+    if suite_css_path.exists():
+        css += "\n" + suite_css_path.read_text(encoding="utf-8")
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     css = " ".join(css.split())
 
