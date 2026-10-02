@@ -21,11 +21,11 @@ BRAND_LOGO_SVG = """
 <svg viewBox="0 0 64 64" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo">
   <defs>
     <linearGradient id="ddsBrandGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6366f1"/>
-      <stop offset="1" stop-color="#4f46e5"/>
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
     </linearGradient>
   </defs>
-  <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#ddsBrandGrad)"/>
+  <rect width="64" height="64" rx="16" fill="url(#ddsBrandGrad)"/>
   <path d="M17 23c0-2.76 5.37-5 12-5s12 2.24 12 5-5.37 5-12 5-12-2.24-12-5Z" fill="#FFFFFF" fill-opacity="0.95"/>
   <path d="M17 23v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
   <path d="M17 32v9c0 2.76 5.37 5 12 5s12-2.24 12-5v-9" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.72"/>
