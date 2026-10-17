@@ -21,14 +21,14 @@ from core.i18n import get_lang, t
 load_css()
 
 VIEW_PATHS = {
-    "page_home": "pages/0_Accueil.py",
-    "page_upload": "pages/1_Upload.py",
-    "page_overview": "pages/2_Overview.py",
-    "page_schema": "pages/3_Schema.py",
-    "page_quality": "pages/4_Quality.py",
-    "page_distributions": "pages/5_Distributions.py",
-    "page_anomalies": "pages/6_Anomalies.py",
-    "page_report": "pages/7_Rapport.py",
+    "page_home": "app_pages/0_Accueil.py",
+    "page_upload": "app_pages/1_Upload.py",
+    "page_overview": "app_pages/2_Overview.py",
+    "page_schema": "app_pages/3_Schema.py",
+    "page_quality": "app_pages/4_Quality.py",
+    "page_distributions": "app_pages/5_Distributions.py",
+    "page_anomalies": "app_pages/6_Anomalies.py",
+    "page_report": "app_pages/7_Rapport.py",
 }
 
 
@@ -41,7 +41,7 @@ def render_selected_view() -> None:
                 t("nav_views", lang=lang),
                 options=list(VIEW_PATHS),
                 format_func=lambda key: t(key, lang=lang),
-                default=st.session_state.get("active_view", "page_upload"),
+                default=st.session_state.get("active_view", "page_home"),
                 key="suite-nav",
                 required=True,
                 label_visibility="collapsed",

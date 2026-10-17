@@ -219,7 +219,7 @@ Les démonstrations publiques peuvent se réveiller après une période d’inac
 
     datadiff-storyteller/
     ├── Home.py
-    ├── pages/
+    ├── app_pages/
     ├── core/
     ├── models/
     │   └── schemas.py

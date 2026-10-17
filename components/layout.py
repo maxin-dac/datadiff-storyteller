@@ -320,6 +320,39 @@ def finding_card(finding: Finding) -> None:
     _html("".join(parts))
 
 
+_WARN_SVG = (
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+    'stroke-linecap="round" stroke-linejoin="round">'
+    '<path d="M12 3l9 16H3z"/><path d="M12 10v4"/><path d="M12 17l.01 0"/></svg>'
+)
+
+_OK_SVG = (
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+    'stroke-linecap="round" stroke-linejoin="round">'
+    '<path d="M5 12l4 4 10-10"/></svg>'
+)
+
+
+def card(inner_html: str) -> None:
+    _html(f'<div class="card">{inner_html}</div>')
+
+
+def warn_box(text: str) -> None:
+    _html(f'<div class="warnbox">{_WARN_SVG}<span>{escape(str(text))}</span></div>')
+
+
+def ok_box(text: str) -> None:
+    _html(f'<div class="okbox">{_OK_SVG}<span>{escape(str(text))}</span></div>')
+
+
+def info_box(text: str) -> None:
+    _html(f'<div class="infobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span>{escape(str(text))}</span></div>')
+
+
+def err_box(text: str) -> None:
+    _html(f'<div class="errbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><span>{escape(str(text))}</span></div>')
+
+
 def empty_state(title: str, message: str, icon_name: str = "upload") -> None:
     _html(
         "".join([
@@ -337,11 +370,8 @@ def empty_state(title: str, message: str, icon_name: str = "upload") -> None:
 def require_analysis() -> dict:
     if "analysis" not in st.session_state:
         lang = get_lang()
-        empty_state(
-            t("home_no_analysis", lang=lang),
-            t("home_no_analysis_msg", lang=lang),
-            icon_name="upload",
-        )
+        warn_box(t("home_no_analysis_msg", lang=lang))
         st.stop()
 
     return st.session_state["analysis"]
+

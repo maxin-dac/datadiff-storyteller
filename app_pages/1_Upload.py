@@ -6,7 +6,7 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from components.layout import page_header, section
+from components.layout import err_box, ok_box, page_header, section, warn_box
 from core.analysis import run_analysis, store_inputs
 from core.i18n import get_lang, t
 from core.ingest import load_csv
@@ -40,10 +40,10 @@ if st.button(t("btn_analyze", lang=_lang), type="primary", width="stretch"):
             analysis = run_analysis(_lang)
         common = [m for m in analysis["mappings"] if m.baseline_column and m.compare_column]
         if not common:
-            st.warning(t("warn_no_common", lang=_lang))
-        st.success(t("success_done", lang=_lang))
+            warn_box(t("warn_no_common", lang=_lang))
+        ok_box(t("success_done", lang=_lang))
     except Exception as exc:
-        st.error(t("err_analysis", lang=_lang, error=exc))
+        err_box(t("err_analysis", lang=_lang, error=exc))
 section(t("sec_current_session", lang=_lang), "report")
 if "analysis" in st.session_state:
     a = st.session_state["analysis"]
@@ -52,4 +52,4 @@ if "analysis" in st.session_state:
     if st.button(t("btn_reset", lang=_lang)):
         st.session_state.pop("analysis", None); st.session_state.pop("inputs", None); st.rerun()
 else:
-    st.info(t("info_no_analysis_yet", lang=_lang))
+    warn_box(t("info_no_analysis_yet", lang=_lang))

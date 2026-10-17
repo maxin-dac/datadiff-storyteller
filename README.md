@@ -219,7 +219,7 @@ Public demos may cold-start after inactivity. If a link is slow, reload once.
 
     datadiff-storyteller/
     ├── Home.py
-    ├── pages/
+    ├── app_pages/
     ├── core/
     ├── models/
     │   └── schemas.py
